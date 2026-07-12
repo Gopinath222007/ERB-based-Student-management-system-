@@ -1,0 +1,510 @@
+# ERB-based-Student-management-system-
+A web-based Student Enterprise Resource Planning (ERP) and Management System built with Ruby and ERB dynamic templates.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register &mdash; Student Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#26362F;
+    --board-dark:#1E2B25;
+    --chalk:#F3EFE3;
+    --chalk-dim:#C9CFC6;
+    --yellow:#E8C468;
+    --blue:#8FB4CE;
+    --red:#CE7B6C;
+    --green:#8FBF9F;
+    --line: rgba(243,239,227,0.22);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.03), transparent 40%),
+      radial-gradient(ellipse at 80% 90%, rgba(255,255,255,0.03), transparent 40%),
+      var(--board);
+    background-attachment:fixed;
+    color:var(--chalk);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    padding:32px 16px;
+    position:relative;
+  }
+  /* chalk dust texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 2px 4px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{max-width:900px; margin:0 auto; position:relative; z-index:1;}
+
+  h1,h2,h3, .chalk-font{ font-family:'Kalam', cursive; }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--yellow);
+    opacity:.85;
+  }
+
+  .board-frame{
+    border:10px solid #4A3A28;
+    border-radius:6px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.12), transparent 20%),
+      var(--board-dark);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45), inset 0 0 60px rgba(0,0,0,0.35);
+    padding:36px 30px;
+    position:relative;
+  }
+  .board-frame::after{
+    content:"";
+    position:absolute; left:14px; right:14px; bottom:10px; height:6px;
+    background:linear-gradient(90deg, transparent, rgba(243,239,227,0.15), transparent);
+    border-radius:3px;
+  }
+
+  .title-row{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:6px;}
+  h1{ font-size:38px; margin:4px 0 2px; color:var(--chalk); font-weight:700; }
+  .subtitle{ color:var(--chalk-dim); font-size:14px; margin-bottom:22px; }
+
+  /* dashed chalk box - the signature element */
+  .chalk-box{
+    border:2px dashed rgba(243,239,227,0.4);
+    border-radius:10px;
+    padding:22px;
+    background:rgba(243,239,227,0.03);
+  }
+
+  label{ display:block; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--blue); margin-bottom:6px; font-family:'Space Mono', monospace;}
+  input[type=text], input[type=password], input[type=date], input[type=number], select{
+    width:100%;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:11px 12px;
+    color:var(--chalk);
+    font-family:'Space Mono', monospace;
+    font-size:14px;
+    margin-bottom:16px;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  input::placeholder{ color:rgba(243,239,227,0.35); }
+  input:focus, select:focus{
+    border-color:var(--yellow);
+    box-shadow:0 0 0 3px rgba(232,196,104,0.15);
+  }
+  input[type=checkbox]{
+    width:16px; height:16px; margin-right:8px; accent-color:var(--yellow); vertical-align:middle;
+  }
+  .check-row{ display:flex; align-items:center; margin-bottom:16px; font-family:'Space Mono', monospace; font-size:13px; color:var(--chalk); }
+  .check-row label{ margin:0; text-transform:none; font-size:13px; color:var(--chalk); letter-spacing:0; }
+
+  select{ appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M0 0 L6 8 L12 0' fill='%23E8C468'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
+
+  .btn{
+    font-family:'Kalam', cursive;
+    font-size:16px;
+    font-weight:700;
+    border:2px solid var(--yellow);
+    color:var(--yellow);
+    background:transparent;
+    border-radius:8px;
+    padding:11px 22px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, transform .1s ease;
+  }
+  .btn:hover{ background:var(--yellow); color:#2A2010; }
+  .btn:active{ transform:scale(.97); }
+  .btn.blue{ border-color:var(--blue); color:var(--blue); }
+  .btn.blue:hover{ background:var(--blue); color:#122028; }
+  .btn.red{ border-color:var(--red); color:var(--red); }
+  .btn.red:hover{ background:var(--red); color:#2A1512; }
+  .btn.full{ width:100%; }
+  .btn.small{ font-size:13px; padding:7px 14px; }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+  .err{ color:var(--red); font-family:'Space Mono',monospace; font-size:13px; margin-top:-6px; margin-bottom:14px; min-height:16px; }
+  .msg{ font-family:'Space Mono',monospace; font-size:13px; margin-top:14px; padding:10px 12px; border-radius:6px; border:1px solid var(--line); }
+  .msg.ok{ color:var(--green); border-color:rgba(143,191,159,0.4); background:rgba(143,191,159,0.06);}
+  .msg.bad{ color:var(--red); border-color:rgba(206,123,108,0.4); background:rgba(206,123,108,0.06);}
+
+  /* tabs / options */
+  .tabs{ display:flex; gap:10px; margin:26px 0 22px; flex-wrap:wrap; }
+  .tab{
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.04em;
+    padding:10px 16px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    color:var(--chalk-dim);
+    cursor:pointer;
+    background:rgba(0,0,0,0.15);
+    transition:all .15s ease;
+  }
+  .tab.active{ border-color:var(--yellow); color:var(--yellow); background:rgba(232,196,104,0.1); }
+  .tab:hover:not(.active){ border-color:var(--chalk-dim); color:var(--chalk); }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+  @media(max-width:600px){ .row{ grid-template-columns:1fr; } }
+
+  /* register table for marks */
+  table.reg{ width:100%; border-collapse:collapse; font-family:'Space Mono', monospace; font-size:13px; margin-top:6px;}
+  table.reg th, table.reg td{ border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; }
+  table.reg th{ color:var(--blue); font-weight:600; text-transform:uppercase; font-size:11px; letter-spacing:.05em; }
+  table.reg tr:last-child td{ border-bottom:none; }
+
+  /* result card for search */
+  .card{
+    border-left:3px solid var(--red);
+    background:rgba(0,0,0,0.18);
+    border-radius:8px;
+    padding:20px 22px;
+    margin-top:18px;
+  }
+  .card h3{ margin:0 0 4px; color:var(--yellow); font-size:24px; }
+  .card .roll{ font-family:'Space Mono', monospace; color:var(--chalk-dim); font-size:13px; margin-bottom:14px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; font-family:'Space Mono', monospace; font-size:13px; margin-bottom:14px;}
+  .grid2 .k{ color:var(--chalk-dim); }
+  .grid2 .v{ color:var(--chalk); }
+  .grade-pill{
+    display:inline-block; font-family:'Kalam',cursive; font-weight:700; font-size:15px;
+    padding:3px 12px; border-radius:14px; border:2px solid var(--green); color:var(--green);
+  }
+  .grade-pill.warn{ border-color:var(--yellow); color:var(--yellow); }
+  .grade-pill.fail{ border-color:var(--red); color:var(--red); }
+
+  .empty{ font-family:'Space Mono',monospace; color:var(--chalk-dim); font-size:13px; padding:14px 0; }
+
+  .foot-note{ text-align:center; color:var(--chalk-dim); font-size:12px; margin-top:18px; font-family:'Space Mono',monospace; opacity:.6; }
+
+  .login-wrap{ max-width:420px; margin:60px auto; }
+  .login-title{ text-align:center; margin-bottom:26px; }
+  .login-title h1{ font-size:34px; margin-bottom:4px; }
+  .logout{
+    font-family:'Space Mono',monospace; font-size:12px; color:var(--chalk-dim);
+    border:1px solid var(--line); border-radius:16px; padding:6px 14px; cursor:pointer; background:transparent;
+  }
+  .logout:hover{ color:var(--red); border-color:var(--red); }
+
+  .count-tag{ font-family:'Space Mono',monospace; font-size:11px; color:var(--chalk-dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ LOGIN VIEW ============ -->
+  <div id="loginView" class="login-wrap">
+    <div class="login-title">
+      <div class="eyebrow">VSBEC &middot; Records Office</div>
+      <h1>The Register</h1>
+      <div class="subtitle">Sign in to open the student ledger</div>
+    </div>
+    <div class="board-frame">
+      <div class="chalk-box">
+        <label for="loginId">Admin ID</label>
+        <input type="text" id="loginId" placeholder="admin" autocomplete="username">
+        <label for="loginPass">Password</label>
+        <input type="password" id="loginPass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
+        <div class="err" id="loginErr"></div>
+        <button class="btn full" onclick="doLogin()">Open Register</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ APP VIEW ============ -->
+  <div id="appView" style="display:none;">
+    <div class="board-frame">
+      <div class="title-row">
+        <div>
+          <div class="eyebrow">VSBEC &middot; Records Office</div>
+          <h1>The Register</h1>
+        </div>
+        <button class="logout" onclick="doLogout()">Log out</button>
+      </div>
+      <div class="subtitle">Search, enter, or remove a student's entry in the ledger. <span class="count-tag" id="countTag"></span></div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="search" onclick="switchTab('search')">01 &middot; Search by Roll No.</div>
+        <div class="tab" data-tab="add" onclick="switchTab('add')">02 &middot; New Entry</div>
+        <div class="tab" data-tab="delete" onclick="switchTab('delete')">03 &middot; Remove Entry</div>
+      </div>
+
+      <!-- SEARCH PANEL -->
+      <div class="panel active" id="panel-search">
+        <div class="chalk-box">
+          <label for="searchRoll">Roll Number</label>
+          <input type="text" id="searchRoll" placeholder="e.g. 21CS045">
+          <button class="btn blue" onclick="doSearch()">Search Ledger</button>
+          <div id="searchResult"></div>
+        </div>
+      </div>
+
+      <!-- ADD PANEL -->
+      <div class="panel" id="panel-add">
+        <div class="chalk-box">
+          <div class="row">
+            <div>
+              <label for="addName">Student Name</label>
+              <input type="text" id="addName" placeholder="Full name">
+            </div>
+            <div>
+              <label for="addRoll">Roll Number</label>
+              <input type="text" id="addRoll" placeholder="e.g. 21CS045">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="addDob">Date of Birth</label>
+              <input type="date" id="addDob">
+            </div>
+            <div>
+              <label for="addDept">Department</label>
+              <select id="addDept">
+                <option value="">Select department</option>
+                <option>Computer Science &amp; Engineering</option>
+                <option>Electronics &amp; Communication Engineering</option>
+                <option>Electrical &amp; Electronics Engineering</option>
+                <option>Mechanical Engineering</option>
+                <option>Civil Engineering</option>
+                <option>Information Technology</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="addTuition">Tuition Fee (&#8377;)</label>
+              <input type="number" id="addTuition" placeholder="0" min="0">
+            </div>
+            <div></div>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="addHosteler" onchange="toggleFeeField('hosteler')">
+            <label for="addHosteler">Student is a hosteler</label>
+          </div>
+          <div class="row" id="hostelFeeRow" style="display:none;">
+            <div>
+              <label for="addHostelFee">Hostel Fee (&#8377;)</label>
+              <input type="number" id="addHostelFee" placeholder="0" min="0">
+            </div>
+            <div></div>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="addBusUser" onchange="toggleFeeField('bus')">
+            <label for="addBusUser">Student uses college bus</label>
+          </div>
+          <div class="row" id="busFeeRow" style="display:none;">
+            <div>
+              <label for="addBusFee">Bus Fee (&#8377;)</label>
+              <input type="number" id="addBusFee" placeholder="0" min="0">
+            </div>
+            <div></div>
+          </div>
+
+          <label style="margin-top:6px;">Subject Marks (out of 100)</label>
+          <div class="row">
+            <div><input type="number" id="sub1" placeholder="Subject 1" min="0" max="100"></div>
+            <div><input type="number" id="sub2" placeholder="Subject 2" min="0" max="100"></div>
+          </div>
+          <div class="row">
+            <div><input type="number" id="sub3" placeholder="Subject 3" min="0" max="100"></div>
+            <div><input type="number" id="sub4" placeholder="Subject 4" min="0" max="100"></div>
+          </div>
+          <div class="row">
+            <div><input type="number" id="sub5" placeholder="Subject 5" min="0" max="100"></div>
+            <div><input type="number" id="sub6" placeholder="Subject 6" min="0" max="100"></div>
+          </div>
+          <div class="row">
+            <div><input type="number" id="sub7" placeholder="Subject 7" min="0" max="100"></div>
+            <div></div>
+          </div>
+
+          <div class="err" id="addErr"></div>
+          <button class="btn full" onclick="doAdd()">Save Entry to Register</button>
+          <div id="addMsg"></div>
+        </div>
+      </div>
+
+      <!-- DELETE PANEL -->
+      <div class="panel" id="panel-delete">
+        <div class="chalk-box">
+          <label for="delRoll">Roll Number</label>
+          <input type="text" id="delRoll" placeholder="e.g. 21CS045">
+          <button class="btn red" onclick="doDelete()">Remove From Register</button>
+          <div id="deleteMsg"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="foot-note">Records exist only for this session &mdash; the register is wiped clean on reload.</div>
+  </div>
+
+</div>
+
+<script>
+  // ---------- in-memory data store (no browser storage per environment rules) ----------
+  var students = [];
+
+  // ---------- auth ----------
+  var ADMIN_ID = "admin";
+  var ADMIN_PASS = "admin@123";
+
+  function doLogin(){
+    var id = document.getElementById('loginId').value.trim();
+    var pass = document.getElementById('loginPass').value;
+    var err = document.getElementById('loginErr');
+    if(id === ADMIN_ID && pass === ADMIN_PASS){
+      err.textContent = "";
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('appView').style.display = 'block';
+      updateCountTag();
+    } else {
+      err.textContent = "Incorrect ID or password. Try again.";
+    }
+  }
+
+  function doLogout(){
+    document.getElementById('loginId').value = "";
+    document.getElementById('loginPass').value = "";
+    document.getElementById('loginErr').textContent = "";
+    document.getElementById('appView').style.display = 'none';
+    document.getElementById('loginView').style.display = 'block';
+  }
+
+  document.getElementById('loginPass').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') doLogin();
+  });
+
+  // ---------- tabs ----------
+  function switchTab(name){
+    document.querySelectorAll('.tab').forEach(function(t){
+      t.classList.toggle('active', t.dataset.tab === name);
+    });
+    document.querySelectorAll('.panel').forEach(function(p){
+      p.classList.remove('active');
+    });
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  function toggleFeeField(which){
+    if(which === 'hosteler'){
+      document.getElementById('hostelFeeRow').style.display =
+        document.getElementById('addHosteler').checked ? 'grid' : 'none';
+    } else {
+      document.getElementById('busFeeRow').style.display =
+        document.getElementById('addBusUser').checked ? 'grid' : 'none';
+    }
+  }
+
+  function updateCountTag(){
+    document.getElementById('countTag').textContent =
+      '(' + students.length + ' record' + (students.length === 1 ? '' : 's') + ' on file)';
+  }
+
+  // ---------- add ----------
+  function doAdd(){
+    var errEl = document.getElementById('addErr');
+    var msgEl = document.getElementById('addMsg');
+    msgEl.innerHTML = "";
+    errEl.textContent = "";
+
+    var name = document.getElementById('addName').value.trim();
+    var roll = document.getElementById('addRoll').value.trim();
+    var dob = document.getElementById('addDob').value;
+    var dept = document.getElementById('addDept').value;
+    var tuition = document.getElementById('addTuition').value;
+    var hosteler = document.getElementById('addHosteler').checked;
+    var busUser = document.getElementById('addBusUser').checked;
+    var hostelFee = document.getElementById('addHostelFee').value;
+    var busFee = document.getElementById('addBusFee').value;
+
+    if(!name || !roll || !dob || !dept || tuition === ""){
+      errEl.textContent = "Please fill in name, roll number, date of birth, department, and tuition fee.";
+      return;
+    }
+    if(students.some(function(s){ return s.roll.toLowerCase() === roll.toLowerCase(); })){
+      errEl.textContent = "A record with roll number \"" + roll + "\" already exists.";
+      return;
+    }
+
+    var subjectIds = ['sub1','sub2','sub3','sub4','sub5','sub6','sub7'];
+    var marks = [];
+    for(var i=0;i<subjectIds.length;i++){
+      var val = document.getElementById(subjectIds[i]).value;
+      if(val === ""){
+        errEl.textContent = "Please enter marks for all 7 subjects.";
+        return;
+      }
+      var num = Number(val);
+      if(isNaN(num) || num < 0 || num > 100){
+        errEl.textContent = "Subject marks must be between 0 and 100.";
+        return;
+      }
+      marks.push(num);
+    }
+
+    var record = {
+      name: name,
+      roll: roll,
+      dob: dob,
+      dept: dept,
+      tuition: Number(tuition) || 0,
+      hosteler: hosteler,
+      hostelFee: hosteler ? (Number(hostelFee) || 0) : 0,
+      busUser: busUser,
+      busFee: busUser ? (Number(busFee) || 0) : 0,
+      marks: marks
+    };
+    students.push(record);
+
+    msgEl.innerHTML = '<div class="msg ok">Saved &mdash; "' + escapeHtml(name) + '" (Roll ' + escapeHtml(roll) + ') added to the register.</div>';
+    clearAddForm();
+    updateCountTag();
+  }
+
+  function clearAddForm(){
+    ['addName','addRoll','addDob','addTuition','addHostelFee','addBusFee',
+     'sub1','sub2','sub3','sub4','sub5','sub6','sub7'].forEach(function(id){
+      document.getElementById(id).value = "";
+    });
+    document.getElementById('addDept').value = "";
+    document.getElementById('addHosteler').checked = false;
+    document.getElementById('addBusUser').checked = false;
+    document.getElementById('hostelFeeRow').style.display = 'none';
+    document.getElementById('busFeeRow').style.display = 'none';
+  }
+
+  // ---------- search ----------
+  function doSearch(){
+    var roll = document.getElementById('searchRoll').value.trim();
+    var resultEl = document.getElementById('searchResult');
+    if(!roll){
+      resultEl.innerHTML = '<div class="empty">Enter a roll number to search the register.</div>';
+      return;
+    }
+    var rec = students.find(function(s){ return s.roll.toLowerCase() === roll.toLowerCase(); });
+    if(!rec){
+      resultEl.innerHTML = '<div class="msg bad">No record found for roll number "' + escapeHtml(roll) + '".</div>';
+      return;
+    }
+    resultEl.innerHTML = 
