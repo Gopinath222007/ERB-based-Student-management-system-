@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="icon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VSBEC – Student Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:   #0a3d1f;
+      --green-mid:    #145a32;
+      --green-accent: #1e8449;
+      --green-light:  #27ae60;
+      --green-pale:   #d5f5e3;
+      --gold:         #f0c040;
+      --white:        #ffffff;
+      --off-white:    #f7faf8;
+      --text-dark:    #0d1f14;
+      --text-mid:     #3d5a47;
+      --text-muted:   #7a9e87;
+      --border:       #c5dece;
+      --error:        #c0392b;
+      --shadow:       0 4px 24px rgba(10,61,31,.13);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--green-dark);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    /* ───── TOP BANNER ───── */
+    .top-banner {
+      width: 100%;
+      background: linear-gradient(90deg, var(--green-dark) 0%, var(--green-mid) 60%, var(--green-accent) 100%);
+      border-bottom: 3px solid var(--gold);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .banner-logo {
+      width: 52px; height: 52px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 14px;
+      color: var(--green-dark);
+      flex-shrink: 0;
+    }
+    .banner-text h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 700;
+      color: var(--white);
+      letter-spacing: .5px;
+    }
+    .banner-text p {
+      font-size: 12px; color: var(--green-pale);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px;
+    }
+    .banner-badge {
+      margin-left: auto;
+      background: var(--gold);
+      color: var(--green-dark);
+      font-weight: 700; font-size: 11px;
+      padding: 4px 12px; border-radius: 20px;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    /* ───── MAIN CONTENT WRAPPER ───── */
+    .wrapper {
+      width: 100%; max-width: 520px;
+      padding: 40px 16px 60px;
+    }
+
+    /* ───── CARD ───── */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-accent));
+      padding: 28px 32px 20px;
+      text-align: center;
+    }
+    .card-header .icon {
+      font-size: 36px; margin-bottom: 8px;
+    }
+    .card-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; color: var(--white); font-weight: 700;
+    }
+    .card-header p {
+      font-size: 13px; color: var(--green-pale); margin-top: 4px;
+    }
+    .card-body { padding: 32px; }
+
+    /* ───── FORM ELEMENTS ───── */
+    .field { margin-bottom: 18px; }
+    label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--text-mid); text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px; color: var(--text-dark);
+      font-family: 'Inter', sans-serif;
+      background: var(--off-white);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--green-accent);
+      box-shadow: 0 0 0 3px rgba(30,132,73,.12);
+      background: var(--white);
+    }
+    input::placeholder { color: var(--text-muted); }
+
+    /* marks grid */
+    .marks-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .marks-grid .field { margin-bottom: 0; }
+
+    /* ───── BUTTONS ───── */
+    .btn {
+      display: block; width: 100%;
+      padding: 13px;
+      border: none; border-radius: 9px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      letter-spacing: .3px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-accent), var(--green-light));
+      color: var(--white);
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--off-white);
+      color: var(--green-mid);
+      border: 1.5px solid var(--border);
+      margin-top: 10px;
+    }
+    .btn-secondary:hover { background: var(--green-pale); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #e6a817, var(--gold));
+      color: var(--green-dark);
+    }
+    .btn-gold:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    /* ───── MENU BUTTONS ───── */
+    .menu-options { display: flex; flex-direction: column; gap: 14px; }
+    .menu-btn {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 20px;
+      background: var(--off-white);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer; text-align: left;
+      transition: all .2s;
+      width: 100%;
+    }
+    .menu-btn:hover { border-color: var(--green-accent); background: var(--green-pale); }
+    .menu-btn .menu-icon {
+      font-size: 28px;
+      width: 48px; height: 48px;
+      background: var(--green-pale);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .menu-btn-text h3 { font-size: 15px; font-weight: 600; color: var(--text-dark); }
+    .menu-btn-text p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .menu-btn .arrow { margin-left: auto; font-size: 18px; color: var(--green-accent); }
+
+    /* ───── MESSAGES ───── */
+    .msg {
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 500;
+      margin-bottom: 16px; display: none;
+    }
+    .msg.success { background: var(--green-pale); color: var(--green-mid); border: 1px solid var(--green-accent); }
+    .msg.error   { background: #fde8e8; color: var(--error); border: 1px solid var(--error); }
+    .msg.show    { display: block; }
+
+    /* ───── RESULT CARD ───── */
+    .result-card {
+      display: none;
+      background: var(--off-white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    .result-card.show { display: block; }
+    .result-header {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-accent));
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .result-header h3 { font-size: 15px; color: var(--white); font-weight: 600; }
+    .result-header .badge {
+      margin-left: auto;
+      background: var(--gold);
+      color: var(--green-dark);
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .result-body { padding: 18px 20px; }
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--text-muted); font-weight: 500; }
+    .info-value { font-weight: 600; color: var(--text-dark); }
+    .marks-section { margin-top: 14px; }
+    .marks-section h4 { font-size: 12px; font-weight: 700; color: var(--text-mid);
+      text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+    .marks-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .marks-table th {
+      background: var(--green-pale); color: var(--green-mid);
+      padding: 7px 12px; text-align: left; font-weight: 600;
+      font-size: 11px; text-transform: uppercase; letter-spacing: .6px;
+    }
+    .marks-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .marks-table tr:last-child td { border-bottom: none; }
+    .mark-pill {
+      display: inline-block; padding: 2px 10px; border-radius: 20px;
+      font-weight: 700; font-size: 12px;
+    }
+    .mark-high { background: #d5f5e3; color: #1e8449; }
+    .mark-mid  { background: #fef9e7; color: #b7950b; }
+    .mark-low  { background: #fde8e8; color: #c0392b; }
+    .total-row { background: var(--green-pale); font-weight: 700; }
+
+    /* ───── DIVIDER ───── */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-muted); font-size: 12px; margin: 16px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ───── SECTION DISPLAY ───── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ───── FOOTER ───── */
+    .footer {
+      color: var(--text-muted); font-size: 11px; text-align: center;
+      padding: 20px; letter-spacing: .5px;
+    }
+    .footer span { color: var(--green-pale); }
+
+    @media (max-width: 480px) {
+      .card-body { padding: 24px 20px; }
+      .marks-grid { grid-template-columns: 1fr; }
+      .banner-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BANNER -->
+<div class="top-banner">
+  <div class="banner-logo">VSB</div>
+  <div class="banner-text">
+    <h1>VSBEC College</h1>
+    <p>Green Campus Initiative</p>
+  </div>
+  <div class="banner-badge">SMS Portal</div>
+</div>
+
+<div class="wrapper">
+
+  <!-- ══════════════ LOGIN SECTION ══════════════ -->
+  <div id="loginSection" class="section active">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🔐</div>
+        <h2>Student Management System</h2>
+        <p>Sign in with your institutional credentials</p>
+      </div>
+      <div class="card-body">
+        <div id="loginMsg" class="msg error"></div>
+        <div class="field">
+          <label>Institution ID</label>
+          <input type="text" id="loginId" placeholder="Enter your ID" autocomplete="off"/>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="loginPass" placeholder="Enter your password"/>
+        </div>
+        <button class="btn btn-primary" onclick="login()">Sign In →</button>
+        <div class="divider">secure access</div>
+        <p style="font-size:11px;color:var(--text-muted);text-align:center;">
+          Authorised personnel only · VCBEC Academic Division
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ MENU SECTION ══════════════ -->
+  <div id="menuSection" class="section">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🎓</div>
+        <h2>Welcome, Admin</h2>
+        <p>Choose an operation to continue</p>
+      </div>
+      <div class="card-body">
+        <div class="menu-options">
+          <button class="menu-btn" onclick="showSection('insertSection')">
+            <div class="menu-icon">➕</div>
+            <div class="menu-btn-text">
+              <h3>Insert Student Data</h3>
+              <p>Add new student with marks for 6 subjects</p>
+            </div>
+            <div class="arrow">›</div>
+          </button>
+          <button class="menu-btn" onclick="showSection('searchSection')">
+            <div class="menu-icon">🔍</div>
+            <div class="menu-btn-text">
+              <h3>Search Student Record</h3>
+              <p>Look up a student by roll number</p>
+            </div>
+            <div class="arrow">›</div>
+          </button>
+          <button class="menu-btn" onclick="showSection('editSection')">
+            <div class="menu-icon">✏️</div>
+            <div class="menu-btn-text">
+              <h3>Edit Student Record</h3>
+              <p>Update name or marks of an existing student</p>
+            </div>
+            <div class="arrow">›</div>
+          </button>
+
+        </div>
+        <div class="divider">or</div>
+        <button class="btn btn-secondary" onclick="logout()">⬅ Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ INSERT SECTION ══════════════ -->
+  <div id="insertSection" class="section">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">➕</div>
+        <h2>Insert Student Data</h2>
+        <p>Fill in all fields to save the record</p>
+      </div>
+      <div class="card-body">
+        <div id="insertMsg" class="msg"></div>
+
+        <div class="field">
+          <label>Student Name</label>
+          <input type="text" id="sName" placeholder="e.g. Arjun Kumar"/>
+        </div>
+        <div class="field">
+          <label>Roll Number</label>
+          <input type="text" id="sRoll" placeholder="e.g. 2024CS001"/>
+        </div>
+
+        <label style="margin-bottom:10px;display:block;">Marks (out of 100)</label>
+        <div class="marks-grid">
+          <div class="field">
+            <label>Subject 1 – Tamil</label>
+            <input type="number" id="m1" placeholder="0–100" min="0" max="100"/>
+          </div>
+          <div class="field">
+            <label>Subject 2 – English</label>
+            <input type="number" id="m2" placeholder="0–100" min="0" max="100"/>
+          </div>
+          <div class="field">
+            <label>Subject 3 – Circuit Analysis</label>
+            <input type="number" id="m3" placeholder="0–100" min="0" max="100"/>
+          </div>
+          <div class="field">
+            <label>Subject 4 – OOPs</label>
+            <input type="number" id="m4" placeholder="0–100" min="0" max="100"/>
+          </div>
+          <div class="field">
+            <label>Subject 5 – Engg. Graphics</label>
+            <input type="number" id="m5" placeholder="0–100" min="0" max="100"/>
+          </div>
+          <div class="field">
+            <label>Subject 6 – Physics</label>
+            <input type="number" id="m6" placeholder="0–100" min="0" max="100"/>
+          </div>
+        </div>
+
+        <div style="margin-top:22px;">
+          <button class="btn btn-gold" onclick="insertStudent()">💾 Save Student Record</button>
+          <button class="btn btn-secondary" onclick="showSection('menuSection')">⬅ Back to Menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SEARCH SECTION ══════════════ -->
+  <div id="searchSection" class="section">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🔍</div>
+        <h2>Search Student Record</h2>
+        <p>Enter roll number to retrieve data</p>
+      </div>
+      <div class="card-body">
+        <div id="searchMsg" class="msg"></div>
+        <div class="field">
+          <label>Student Roll Number</label>
+          <input type="text" id="searchRoll" placeholder="e.g. 2024CS001" onkeydown="if(event.key==='Enter')searchStudent()"/>
+        </div>
+        <button class="btn btn-primary" onclick="searchStudent()">🔎 Find Record</button>
+
+        <!-- Result -->
+        <div id="resultCard" class="result-card">
+          <div class="result-header">
+            <span>📋</span>
+            <h3 id="resName">–</h3>
+            <div class="badge" id="resBadge">–</div>
+          </div>
+          <div class="result-body">
+            <div class="info-row">
+              <span class="info-label">Roll Number</span>
+              <span class="info-value" id="resRoll">–</span>
+            </div>
+            <div class="marks-section">
+              <h4>📊 Subject-wise Marks</h4>
+              <table class="marks-table">
+                <thead>
+                  <tr><th>#</th><th>Subject</th><th>Marks</th><th>Grade</th></tr>
+                </thead>
+                <tbody id="marksBody"></tbody>
+                <tfoot>
+                  <tr class="total-row">
+                    <td colspan="2" style="padding:8px 12px;font-weight:700;">Total</td>
+                    <td id="resTotal" style="padding:8px 12px;font-weight:700;"></td>
+                    <td id="resPercent" style="padding:8px 12px;font-weight:700;"></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top:18px;" onclick="showSection('menuSection')">⬅ Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT SECTION -->
+  <div id="editSection" class="section">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">✏️</div>
+        <h2>Edit Student Record</h2>
+        <p>Search by roll number, then update the fields</p>
+      </div>
+      <div class="card-body">
+        <div id="editMsg" class="msg"></div>
+
+        <!-- Step 1: find student -->
+        <div id="editSearchArea">
+          <div class="field">
+            <label>Student Roll Number</label>
+            <input type="text" id="editRoll" placeholder="e.g. 2024CS001" onkeydown="if(event.key==='Enter')loadForEdit()"/>
+          </div>
+          <button class="btn btn-primary" onclick="loadForEdit()">🔎 Load Record</button>
+        </div>
+
+        <!-- Step 2: edit form (hidden until student found) -->
+        <div id="editForm" style="display:none; margin-top:20px;">
+          <div style="background:var(--green-pale);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--green-mid);margin-bottom:16px;">
+            ✅ Record loaded — make your changes below and save.
+          </div>
+          <div class="field">
+            <label>Student Name</label>
+            <input type="text" id="eName" placeholder="Student name"/>
+          </div>
+          <div class="field">
+            <label>Roll Number</label>
+            <input type="text" id="eRollDisplay" disabled style="opacity:.6;cursor:not-allowed;"/>
+          </div>
+          <label style="margin-bottom:10px;display:block;">Marks (out of 100)</label>
+          <div class="marks-grid">
+            <div class="field">
+              <label>Subject 1 – Tamil</label>
+              <input type="number" id="em1" placeholder="0–100" min="0" max="100"/>
+            </div>
+            <div class="field">
+              <label>Subject 2 – English</label>
+              <input type="number" id="em2" placeholder="0–100" min="0" max="100"/>
+            </div>
+            <div class="field">
+              <label>Subject 3 – Circuit Analysis</label>
+              <input type="number" id="em3" placeholder="0–100" min="0" max="100"/>
+            </div>
+            <div class="field">
+              <label>Subject 4 – OOPs</label>
+              <input type="number" id="em4" placeholder="0–100" min="0" max="100"/>
+            </div>
+            <div class="field">
+              <label>Subject 5 – Engg. Graphics</label>
+              <input type="number" id="em5" placeholder="0–100" min="0" max="100"/>
+            </div>
+            <div class="field">
+              <label>Subject 6 – Physics</label>
+              <input type="number" id="em6" placeholder="0–100" min="0" max="100"/>
+            </div>
+          </div>
+          <div style="margin-top:22px;">
+            <button class="btn btn-gold" onclick="saveEdit()">💾 Update Record</button>
+            <button class="btn btn-secondary" onclick="resetEditForm()">🔄 Search Another</button>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top:14px;" onclick="showSection('menuSection')">⬅ Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  © 2024 <span>VSBEC – Green Campus</span> · Student Management Portal
+</div>
+
+<script>
+  // ─── CREDENTIALS ───
+  const VALID_ID   = 'vsbec';
+  const VALID_PASS = 'green campus';
+
+  // ─── IN-MEMORY DATABASE ───
+  const db = {};
+
+  const SUBJECTS = ['Tamil','English','Circuit Analysis','OOPs','Engineering Graphics','Physics'];
+
+  // ─── SECTION NAVIGATION ───
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    clearMessages();
+  }
+
+  function clearMessages() {
+    document.querySelectorAll('.msg').forEach(m => { m.classList.remove('show','success','error'); m.textContent=''; });
+    const rc = document.getElementById('resultCard');
+    if (rc) rc.classList.remove('show');
+    const ef = document.getElementById('editForm');
+    if (ef) ef.style.display = 'none';
+    const es = document.getElementById('editSearchArea');
+    if (es) es.style.display = 'block';
+    const er = document.getElementById('editRoll');
+    if (er) er.value = '';
+  }
+
+  // ─── LOGIN ───
+  function login() {
+    const id   = document.getElementById('loginId').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const msg  = document.getElementById('loginMsg');
+
+    if (!id || !pass) { showMsg(msg,'error','Please enter both ID and password.'); return; }
+    if (id === VALID_ID && pass === VALID_PASS) {
+      showSection('menuSection');
+      document.getElementById('loginId').value = '';
+      document.getElementById('loginPass').value = '';
+    } else {
+      showMsg(msg,'error','Invalid ID or password. Please try again.');
+    }
+  }
+
+  function logout() { showSection('loginSection'); }
+
+  // ─── INSERT STUDENT ───
+  function insertStudent() {
+    const name = document.getElementById('sName').value.trim();
+    const roll = document.getElementById('sRoll').value.trim().toUpperCase();
+    const marks = [];
+    const msg  = document.getElementById('insertMsg');
+
+    if (!name || !roll) { showMsg(msg,'error','Name and Roll Number are required.'); return; }
+
+    for (let i = 1; i <= 6; i++) {
+      const v = document.getElementById('m'+i).value;
+      const n = parseFloat(v);
+      if (v === '' || isNaN(n) || n < 0 || n > 100) {
+        showMsg(msg,'error',`Please enter a valid mark (0–100) for Subject ${i} – ${SUBJECTS[i-1]}.`); return;
+      }
+      marks.push(n);
+    }
+
+    if (db[roll]) { showMsg(msg,'error',`Roll number ${roll} already exists. Use a unique roll number.`); return; }
+
+    db[roll] = { name, roll, marks };
+    showMsg(msg,'success',`✅ Student "${name}" (${roll}) saved successfully!`);
+    // clear form
+    ['sName','sRoll','m1','m2','m3','m4','m5','m6'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  // ─── SEARCH STUDENT ───
+  function searchStudent() {
+    const roll = document.getElementById('searchRoll').value.trim().toUpperCase();
+    const msg  = document.getElementById('searchMsg');
+    const card = document.getElementById('resultCard');
+
+    card.classList.remove('show');
+    if (!roll) { showMsg(msg,'error','Please enter a roll number.'); return; }
+
+    const student = db[roll];
+    if (!student) { showMsg(msg,'error',`No record found for roll number "${roll}".`); return; }
+
+    // Populate result
+    document.getElementById('resName').textContent = student.name;
+    document.getElementById('resRoll').textContent = student.roll;
+
+    const total   = student.marks.reduce((a,b)=>a+b,0);
+    const percent = ((total/600)*100).toFixed(1);
+
+    document.getElementById('resTotal').textContent   = `${total} / 600`;
+    document.getElementById('resPercent').textContent = `${percent}%`;
+    document.getElementById('resBadge').textContent   = getResult(percent);
+
+    const tbody = document.getElementById('marksBody');
+    tbody.innerHTML = '';
+    student.marks.forEach((m,i) => {
+      const grade = getGrade(m);
+      const cls   = m>=75?'mark-high':m>=50?'mark-mid':'mark-low';
+      tbody.innerHTML += `
+        <tr>
+          <td>${i+1}</td>
+          <td>${SUBJECTS[i]}</td>
+          <td><span class="mark-pill ${cls}">${m}</span></td>
+          <td>${grade}</td>
+        </tr>`;
+    });
+
+    clearMsgEl(msg);
+    card.classList.add('show');
+  }
+
+  // ─── HELPERS ───
+  function showMsg(el, type, text) {
+    el.className = `msg ${type} show`;
+    el.textContent = text;
+  }
+  function clearMsgEl(el) { el.className='msg'; el.textContent=''; }
+
+  function getGrade(m) {
+    if (m>=90) return 'O';
+    if (m>=80) return 'A+';
+    if (m>=70) return 'A';
+    if (m>=60) return 'B+';
+    if (m>=50) return 'B';
+    if (m>=40) return 'C';
+    return 'F';
+  }
+  function getResult(pct) {
+    if (pct>=75) return 'Distinction';
+    if (pct>=60) return 'First Class';
+    if (pct>=50) return 'Second Class';
+    if (pct>=40) return 'Pass';
+    return 'Fail';
+  }
+
+  // ─── EDIT STUDENT ───
+  function loadForEdit() {
+    const roll = document.getElementById('editRoll').value.trim().toUpperCase();
+    const msg  = document.getElementById('editMsg');
+    if (!roll) { showMsg(msg,'error','Please enter a roll number.'); return; }
+    const student = db[roll];
+    if (!student) { showMsg(msg,'error',`No record found for roll number "${roll}".`); return; }
+
+    document.getElementById('eName').value       = student.name;
+    document.getElementById('eRollDisplay').value = student.roll;
+    student.marks.forEach((m,i) => { document.getElementById('em'+(i+1)).value = m; });
+
+    clearMsgEl(msg);
+    document.getElementById('editForm').style.display = 'block';
+    document.getElementById('editSearchArea').style.display = 'none';
+  }
+
+  function saveEdit() {
+    const roll = document.getElementById('eRollDisplay').value.trim().toUpperCase();
+    const name = document.getElementById('eName').value.trim();
+    const msg  = document.getElementById('editMsg');
+    const marks = [];
+
+    if (!name) { showMsg(msg,'error','Student name cannot be empty.'); return; }
+
+    for (let i = 1; i <= 6; i++) {
+      const v = document.getElementById('em'+i).value;
+      const n = parseFloat(v);
+      if (v === '' || isNaN(n) || n < 0 || n > 100) {
+        showMsg(msg,'error',`Please enter a valid mark (0–100) for Subject ${i} – ${SUBJECTS[i-1]}.`); return;
+      }
+      marks.push(n);
+    }
+
+    db[roll] = { name, roll, marks };
+    showMsg(msg,'success',`✅ Record for "${name}" (${roll}) updated successfully!`);
+    document.getElementById('editForm').style.display = 'none';
+    document.getElementById('editSearchArea').style.display = 'block';
+    document.getElementById('editRoll').value = '';
+  }
+
+  function resetEditForm() {
+    document.getElementById('editForm').style.display = 'none';
+    document.getElementById('editSearchArea').style.display = 'block';
+    document.getElementById('editRoll').value = '';
+    clearMsgEl(document.getElementById('editMsg'));
+  }
+
+  // Allow Enter key on login inputs
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('loginSection').classList.contains('active')) login();
+  });
+</script>
+</body>
+</html>
